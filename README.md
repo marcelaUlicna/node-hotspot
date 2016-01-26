@@ -1,2 +1,2 @@
-# node-hotspot
+# node-hsp-simple
 Node hotspot
