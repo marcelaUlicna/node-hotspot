@@ -1,0 +1,11 @@
+{
+  "name"           : "node-hotspot",
+  "version"        : "0.0.1",
+  "description"    : "Simple hotspot application.",
+  "main"           : "hotspot.js",
+  "author"         : "Marcela Ulicna",
+  "dependencies"   : {
+    "node-hotspot" : "~0.1.7",
+    "minimist"     : "~1.2.0"
+  }
+}
