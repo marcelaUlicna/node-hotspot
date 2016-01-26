@@ -1,5 +1,5 @@
 {
-  "name"           : "node-hotspot",
+  "name"           : "node-hsp-simple",
   "version"        : "0.0.1",
   "description"    : "Simple hotspot application.",
   "main"           : "hotspot.js",
