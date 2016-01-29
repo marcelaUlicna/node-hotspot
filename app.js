@@ -17,13 +17,13 @@ module.exports = function(opts, arg) {
     var start = function() {
         if(running) {
             console.log("Hotspot is already enabled.");
-            process.stdout.write(userCommand);
+            customRead();
         } else {
             hotspot.enable(hotspotOpts)
                 .then(function() {
                     console.log('Hotspot enabled');
                     running = true;
-                    process.stdout.write(userCommand);
+                    customRead();
                 })
                 .catch(function(e) {
                     console.log('Something went wrong; Perms?', e);
@@ -51,14 +51,14 @@ module.exports = function(opts, arg) {
                 Object.keys(st).forEach(function(element) {
                     console.log(element, ": ", st[element]);
                 }, this);
-                process.stdout.write(userCommand);
+                customRead();
             });
     }
 
     var verbose = function() {
         console.info("Hotspot name:", hotspotOpts["ssid"]);
         console.info("Password:", hotspotOpts["password"]);
-        process.stdout.write(userCommand);
+        customRead();
     }
 
     var help = function() {
@@ -87,7 +87,7 @@ module.exports = function(opts, arg) {
         argNote.forEach(function(element) {
             console.log("  ", element.command, "\t", element.desctiption);
         }, this);
-        process.stdout.write(userCommand);   
+        customRead();   
     }
 
     var execute = function(act) {
@@ -109,7 +109,7 @@ module.exports = function(opts, arg) {
                 break;
             default:
                 console.log("Unknown action ", act);
-                process.stdout.write(userCommand);
+                customRead();
                 break;
         }
     }
@@ -119,28 +119,7 @@ module.exports = function(opts, arg) {
     var openConsole = function() {
         process.stdin.on('readable', () => {
             var chunk = process.stdin.read();
-            if (chunk !== null) {
-                var actionCode = chunk.toString().slice(1).trim();
-                if(actionCode.startsWith('e')) {
-                    if(!running) {
-                        var eParts = actionCode.split('--');
-                        eParts.forEach(function(element) {
-                            var tr = element.trim();
-                            if(tr.startsWith("n ")) {
-                                var actualName = tr.replace("n ", "").trim();
-                                hotspotOpts.ssid = actualName;
-                            } else if(tr.startsWith("psw ")) {
-                                var actualPsw = tr.replace("psw ", "").trim();
-                                hotspotOpts.password = actualPsw;
-                            }
-                        }, this);
-                    }
-
-                    actionCode = "e";
-                }
-                
-                execute(actionCode);
-            }
+            resolveAction(chunk); 
         });
 
         process.stdin.on('end', () => {
@@ -148,6 +127,33 @@ module.exports = function(opts, arg) {
         });
     }
     
+    var resolveAction = function(chunk) {
+        if (chunk !== null) {
+            var actionCode = chunk.toString().slice(1).trim();
+            if (actionCode.startsWith('e')) {
+                if (!running) {
+                    var eParts = actionCode.split('--');
+                    eParts.forEach(function (element) {
+                        var tr = element.trim();
+                        if (tr.startsWith("n ")) {
+                            var actualName = tr.replace("n ", "").trim();
+                            hotspotOpts.ssid = !!actualName ? actualName : hotspotOpts.ssid;
+                        } else if (tr.startsWith("psw ")) {
+                            var actualPsw = tr.replace("psw ", "").trim();
+                            hotspotOpts.password = !!actualPsw ? actualPsw : hotspotOpts.password;
+                        }
+                    }, this);
+                }
+                actionCode = "e";
+            }
+            execute(actionCode);
+        }
+    }
+    
+    var customRead = function() {
+        console.log();
+        process.stdout.write(userCommand);
+    }
     
     openConsole();
     execute(arg);
