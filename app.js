@@ -26,7 +26,7 @@ module.exports = function(opts, arg) {
                     customRead();
                 })
                 .catch(function(e) {
-                    console.log('Something went wrong; Perms?', e);
+                    console.log('Staring hotspot failed. Error: ', e);
                     process.exit(1);
                 });
         }
@@ -39,7 +39,7 @@ module.exports = function(opts, arg) {
                 process.exit(0);
             })
             .catch(function(e) {
-                console.log('Something went wrong; Perms?', e);
+                console.log('Some error occurred when hotspost is being disabled. Error: ', e);
                 process.exit(1);
             });
     }
