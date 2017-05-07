@@ -36,7 +36,7 @@ Hotspot enabled
 Action:
 ```
 
-Create new hotspot with given name (parameters -e --n "Hotspot name" --psw hotspot_password)
+Create new hotspot with given name and password (parameters -e --n "Hotspot name" --psw hotspot_password)
 
 `node hotspot.js -e --n "My Wifi" --psw testPsw01`
 
